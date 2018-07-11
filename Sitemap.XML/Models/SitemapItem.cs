@@ -99,36 +99,20 @@ namespace Sitemap.XML.Models
 
             var serverUrl = (new SitemapManagerConfiguration(site.Name)).ServerUrl;
             
-            if (serverUrl.Contains("http://"))
-            {
-                serverUrl = serverUrl.Substring("http://".Length);
-            }
-            else if (serverUrl.Contains("https://"))
-            {
-                serverUrl = serverUrl.Substring("https://".Length);
-            }
-
             StringBuilder sb = new StringBuilder();
 
             if (!string.IsNullOrEmpty(serverUrl))
             {
-                if (url.Contains("://") && !url.Contains("http"))
+                if (!serverUrl.Contains("http://") && !serverUrl.Contains("https://"))
                 {
-                    sb.Append("http://");
-                    sb.Append(serverUrl);
-                    if (url.IndexOf("/", 3) > 0)
-                        sb.Append(url.Substring(url.IndexOf("/", 3)));
+                    serverUrl = string.Format("https://{0}", serverUrl);
                 }
-                else
-                {
-                    sb.Append("http://");
-                    sb.Append(serverUrl);
-                    sb.Append(url);
-                }
+                sb.Append(serverUrl);
+                sb.Append(url);
             }
             else if (!string.IsNullOrEmpty(site.Properties["hostname"]))
             {
-                sb.Append("http://");
+                sb.Append("https://");
                 sb.Append(site.Properties["hostname"]);
                 sb.Append(url);
             }
@@ -136,7 +120,7 @@ namespace Sitemap.XML.Models
             {
                 if (url.Contains("://") && !url.Contains("http"))
                 {
-                    sb.Append("http://");
+                    sb.Append("https://");
                     sb.Append(url);
                 }
                 else
